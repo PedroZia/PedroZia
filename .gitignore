@@ -1,2 +1,4 @@
 __pycache__/
 *.pyc
+scripts/photo*.png
+scripts/photo*.jpg
