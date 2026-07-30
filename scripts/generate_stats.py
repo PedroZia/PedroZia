@@ -15,7 +15,7 @@ the edge. Motion is SMIL because GitHub strips <script> from READMEs.
 
 Env:
   GITHUB_TOKEN  required
-  GH_LOGIN      user to summarise (default: andriidrok1)
+   GH_LOGIN      user to summarise (default: PedroZia)
   OUT_DIR       where to write (default: repository root)
 """
 import base64
@@ -134,6 +134,24 @@ def pretty(iso):
     return f"{MON[d.month - 1]} {d.day}"
 
 
+def relative(iso):
+    ts = datetime.strptime(iso[:19], "%Y-%m-%dT%H:%M:%S").replace(
+        tzinfo=timezone.utc)
+    delta = datetime.now(timezone.utc) - ts
+    mins = int(delta.total_seconds() // 60)
+    if mins < 2:
+        return "just now"
+    if mins < 60:
+        return f"{mins}m ago"
+    hrs = mins // 60
+    if hrs < 24:
+        return f"{hrs}h ago"
+    days = hrs // 24
+    if days < 30:
+        return f"{days}d ago"
+    return ts.strftime("%b %d")
+
+
 def streaks(days):
     """Current and longest runs of days with at least one contribution.
 
@@ -178,6 +196,26 @@ def languages(repos):
         return sorted(d.items(), key=lambda kv: (-kv[1], kv[0]))[:5]
 
     return rank(by_size), rank(by_repo)
+
+
+def fetch_runs(owner, repo, token):
+    url = (f"https://api.github.com/repos/{owner}/{repo}"
+           f"/actions/runs?per_page=100&status=completed")
+    req = urllib.request.Request(url, headers={
+        "Authorization": f"bearer {token}",
+        "User-Agent": f"{owner}-profile-stats",
+        "Accept": "application/vnd.github+json",
+    })
+    with urllib.request.urlopen(req, timeout=30) as r:
+        data = json.load(r)
+    runs = data.get("workflow_runs", [])
+    by_workflow = {}
+    for run in runs:
+        wid = run["workflow_id"]
+        cur = by_workflow.get(wid)
+        if not cur or run["run_number"] > cur["run_number"]:
+            by_workflow[wid] = run
+    return sorted(by_workflow.values(), key=lambda r: r["name"].lower())
 
 
 def summarise(user):
@@ -443,6 +481,57 @@ def draw_year(s):
     return "".join(p)
 
 
+def draw_runs(owner, repo, token):
+    runs = fetch_runs(owner, repo, token)
+    if not runs:
+        return draw_runs_empty()
+
+    rows = len(runs)
+    H = 26 + rows * 22 + 6
+    colw = WIDTH - LEFT - 30
+
+    p = [head(WIDTH, H)]
+    p.append(f'<g opacity="0">{fade(0.10)}'
+             + label(LEFT, 12, "WORKFLOWS", 9, "m-f",
+                     extra=' letter-spacing="1.3"') + '</g>')
+
+    for ri, run in enumerate(runs):
+        y = 26 + ri * 22
+        name = run.get("name", "unknown")[:28]
+        conclusion = run.get("conclusion", "unknown")
+
+        if conclusion == "success":
+            icon, cls = "\u2713", "e-f"
+        elif conclusion == "failure":
+            icon, cls = "\u2717", "m-f"
+        elif conclusion == "cancelled":
+            icon, cls = "\u25ef", "m-f"
+        else:
+            icon, cls = "\u00b7", "m-f"
+
+        p.append(f'<g opacity="0">{fade(0.20 + ri * 0.05)}'
+                 + label(LEFT, y + 8, name, 11, "e-f")
+                 + label(LEFT + colw - 96, y + 8, icon, 11, cls)
+                 + label(LEFT + colw - 4, y + 8,
+                         relative(run["created_at"]), 10, "m-f", "end")
+                 + '</g>')
+
+    p.append("</svg>")
+    return "".join(p)
+
+
+def draw_runs_empty():
+    H = 46
+    p = [head(WIDTH, H)]
+    p.append(f'<g opacity="0">{fade(0.10)}'
+             + label(LEFT, 12, "WORKFLOWS", 9, "m-f",
+                     extra=' letter-spacing="1.3"') + '</g>')
+    p.append(f'<g opacity="0">{fade(0.25)}'
+             + label(LEFT, 32, "no completed runs yet", 11, "m-f") + '</g>')
+    p.append("</svg>")
+    return "".join(p)
+
+
 # ---------------------------------------------------------------- main
 
 def write(path, svg):
@@ -461,12 +550,13 @@ def main():
     token = os.environ.get("GITHUB_TOKEN")
     if not token:
         sys.exit("GITHUB_TOKEN is not set")
-    login = os.environ.get("GH_LOGIN", "andriidrok1")
+    login = os.environ.get("GH_LOGIN", "PedroZia")
     out_dir = os.environ.get("OUT_DIR", ".")
 
     s = summarise(fetch(login, token))
     files = {"stats.svg": draw_stats(s), "streak.svg": draw_streak(s),
-             "langs.svg": draw_langs(s), "year.svg": draw_year(s)}
+             "langs.svg": draw_langs(s), "year.svg": draw_year(s),
+             "runs.svg": draw_runs(login, login, token)}
     for word in ("about", "stack", "projects", "stats", "about this page"):
         files[f"hd-{word.replace(' ', '-')}.svg"] = draw_heading(word)
 

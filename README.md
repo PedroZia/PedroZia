@@ -1,45 +1,47 @@
 <div align="center">
 
-<img src="./ascii.svg" width="460" alt="Andrii Drok"/>
+<img src="./ascii.svg" width="460" alt="PedroZia"/>
 
 <img src="./stats.svg" width="620" alt="Contributions in the last year"/>
+<img src="./runs.svg" width="620" alt="Workflow status"/>
 
-[andriidrok.com](https://andriidrok.com) &nbsp;·&nbsp;
-[instagram](https://www.instagram.com/andrii_drok/) &nbsp;·&nbsp;
-[linkedin](https://www.linkedin.com/in/andriidrok/) &nbsp;·&nbsp;
-[email](mailto:clb@mirasvit.com)
+[linkedin](https://br.linkedin.com/in/pedrozia) &nbsp;·&nbsp;
+[instagram](https://www.instagram.com/pedropaulozia) &nbsp;·&nbsp;
+[website](#) &nbsp;·&nbsp;
+[email](mailto:pedropaulozia@gmail.com)
 
 </div>
 
 <img src="./hd-about.svg" width="620" alt="about"/>
 
-> CS student at San Francisco State, in the SF Bay Area.<br>
-> Small, sharp tools over big vague ideas.
+> Backends that hold up, pipelines that don't need babysitting — CI, scheduled<br>
+> automation, and embedded when something has to talk to the real world.
 
-I build fast, test on real users, and kill what doesn't work. Right now that's<br>
-[autobroll](https://github.com/andriidrok1/autobroll) — an AI short-form video editor that runs in the browser. Also<br>
-deep into markets: Pine Script indicators, backtesting, on-chain data.
+I build backends in Java / Quarkus, ship them through pipelines I maintain, and<br>
+reach for C on microcontrollers when the problem leaves the server. This profile<br>
+is a scheduled automation in itself — every graphic here is drawn by a workflow<br>
+from live data, not embedded from a third-party service.
 
 <img src="./hd-stack.svg" width="620" alt="stack"/>
 
-<samp>python &nbsp; typescript &nbsp; javascript &nbsp; react &nbsp; node &nbsp; three.js &nbsp; fastapi &nbsp; postgres &nbsp; docker &nbsp; git &nbsp; linux</samp>
+**Backend**&nbsp;&nbsp;&nbsp; <samp>java &nbsp; quarkus &nbsp; hibernate &nbsp; rest apis &nbsp; python</samp><br>
+**Frontend**&nbsp; <samp>javascript &nbsp; html &nbsp; css &nbsp; primefaces</samp><br>
+**Database**&nbsp; <samp>postgresql &nbsp; sqlite &nbsp; sql</samp><br>
+**DevOps**&nbsp;&nbsp;&nbsp;&nbsp;<samp>docker &nbsp; git &nbsp; github actions &nbsp; gitlab ci &nbsp; linux &nbsp; wildfly</samp><br>
+**Embedded**&nbsp; <samp>arduino &nbsp; esp32 &nbsp; avr &nbsp; automation</samp><br>
+**Exploring** <samp>ai &nbsp; machine learning &nbsp; computer vision</samp>
 
 <img src="./hd-projects.svg" width="620" alt="projects"/>
 
-**[autobroll](https://github.com/andriidrok1/autobroll)** &nbsp;·&nbsp; <samp>typescript, remotion</samp><br>
-AI short-form video editor in the browser. Auto captions with accents,<br>
-drag-and-retime editing, b-roll placement: transcript in, rendered video out.
+**[contribution-snapshot](https://github.com/PedroZia/contribution-snapshot)** &nbsp;·&nbsp; <samp>github actions, yaml</samp><br>
+Reusable composite action — draws an SVG contribution sparkline from the<br>
+GraphQL API. Drop it into any workflow, no third-party services.
 
-**[strategy-checker](https://github.com/andriidrok1/strategy-checker)** &nbsp;·&nbsp; <samp>python</samp><br>
-Describe a trading strategy in plain English, get a real backtest with<br>
-statistical validation. Exposes curve-fitting, not alpha.
+**[your-project](#)** &nbsp;·&nbsp; <samp>stack, here</samp><br>
+Short description of what this project does.
 
-**[compound](https://github.com/andriidrok1/compound)** &nbsp;·&nbsp; <samp>typescript, convex</samp><br>
-Autonomous research agent for your second brain. Built solo at Nozomio<br>
-Hackathon, EF SF.
-
-**[andriidrok.com](https://andriidrok.com)** &nbsp;·&nbsp; <samp>three.js, webgl</samp><br>
-Particle-morph portfolio: thousands of particles reshaping between scenes.
+**[another-project](#)** &nbsp;·&nbsp; <samp>stack, here</samp><br>
+Short description of what this project does.
 
 <img src="./hd-stats.svg" width="620" alt="stats"/>
 
@@ -51,15 +53,20 @@ Particle-morph portfolio: thousands of particles reshaping between scenes.
 
 <img src="./year.svg" width="620" alt="The last year, one character per day"/>
 
+<img src="./recent-activity.svg" width="620" alt="Recent public activity"/>
+
 </div>
 
-<img src="./hd-about-this-page.svg" width="620" alt="about this page"/>
+<img src="./hd-about-this-page.svg" width="620" alt="how it runs"/>
 
 Every graphic here is generated, not embedded from anyone else's server.<br>
 `ascii.svg` is a photo pushed through a character ramp by<br>
 [`scripts/make_portrait.py`](scripts/make_portrait.py); the stat graphics and<br>
-these section headings are drawn by [a scheduled action](.github/workflows/stats.yml)<br>
-straight from the GitHub GraphQL API, once a day, committing only what changed.
+these section headings are drawn by two scheduled actions —<br>
+[`refresh stats`](.github/workflows/stats.yml) at 05:17 UTC and<br>
+[`refresh activity`](.github/workflows/activity.yml) at 05:41 UTC — once a day,<br>
+committing only what changed. The `runs.svg` badge at the top tells you whether<br>
+they actually ran — drawn from the Actions API, not a third-party badge service.
 
 They animate with SMIL inside the SVG, because GitHub strips scripts from<br>
 READMEs — and since nothing loads from a third party, nothing here can<br>
@@ -71,5 +78,8 @@ each graphic draws and inlined as base64. That isn't only for looks: the<br>
 portrait's grid assumes an advance width of exactly 0.600 em, and a viewer whose<br>
 default monospace is narrower would otherwise see it squeezed.
 
-Language totals cover public repositories only. `year.svg` uses the portrait's<br>
-character ramp: `:` `+` `#` `@`, quiet to loud.
+Three APIs feed this page — GraphQL for contributions, Events for recent<br>
+activity, Actions for workflow status — all called from the runner with zero<br>
+external services in the critical path. Language totals cover public<br>
+repositories only. `year.svg` uses the portrait's character ramp: `:` `+` `#` `@`,<br>
+quiet to loud.
