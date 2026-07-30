@@ -555,8 +555,11 @@ def main():
 
     s = summarise(fetch(login, token))
     files = {"stats.svg": draw_stats(s), "streak.svg": draw_streak(s),
-             "langs.svg": draw_langs(s), "year.svg": draw_year(s),
-             "runs.svg": draw_runs(login, login, token)}
+             "langs.svg": draw_langs(s), "year.svg": draw_year(s)}
+    try:
+        files["runs.svg"] = draw_runs(login, login, token)
+    except Exception as e:
+        print(f"runs.svg skipped — could not fetch workflow runs ({e})")
     for word in ("about", "stack", "projects", "stats", "about this page"):
         files[f"hd-{word.replace(' ', '-')}.svg"] = draw_heading(word)
 
