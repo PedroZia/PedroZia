@@ -2,7 +2,7 @@ name: stats card
 on:
   schedule: [{cron: "0 6 * * *"}]
   workflow_dispatch:
-  push: {paths: [scripts/stats_card.py]}
+  push: {paths: [scripts/stats_card.py, .github/workflows/stats.yml]}
 permissions: {contents: write}
 jobs:
   build:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python scripts/stats_card.py ${{ github.repository_owner }} stats.svg
-        env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
+        env: {GITHUB_TOKEN: "${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}"}
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
